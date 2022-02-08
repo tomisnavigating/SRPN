@@ -10,11 +10,7 @@ public class SRPN {
   // processing and/or display
   private Stack<Integer> stack;
 
-  // the 'rStack' conatains a list of apparently random numbers. When the user
-  // enters an 'r' command, a number is
-  // popped off this stack and placed on the main stack. When the rStack is empty, SPRN
-  // returns "Stack overflow." in response to any more 'r' commands.
-  private Stack<Integer> rStack;
+  private PseudoRandomNumberGenerator prng;
 
   // these static constants contain all legal input characters (apart from
   // whitespace nd digits). We can use them to determine whether input is legal or
@@ -28,30 +24,7 @@ public class SRPN {
   public SRPN() {
     stack = new Stack<Integer>();
 
-    rStack = new Stack<Integer>();
-    rStack.push(1804289383);
-    rStack.push(521595368);
-    rStack.push(35005211);
-    rStack.push(1303455736);
-    rStack.push(304089172);
-    rStack.push(1540383426);
-    rStack.push(1365180540);
-    rStack.push(1967513926);
-    rStack.push(2044897763);
-    rStack.push(1102520059);
-    rStack.push(783368690);
-    rStack.push(1350490027);
-    rStack.push(1025202362);
-    rStack.push(1189641421);
-    rStack.push(596516649);
-    rStack.push(1649760492);
-    rStack.push(719885386);
-    rStack.push(424238335);
-    rStack.push(1957747793);
-    rStack.push(1714636915);
-    rStack.push(1681692777);
-    rStack.push(846930886);
-    rStack.push(1804289383);
+    prng = new PseudoRandomNumberGenerator();
 
   }
 
@@ -210,12 +183,18 @@ public class SRPN {
     return SRPN.legalMathsOperators.indexOf(c) != -1;
   }
 
+
   private void rFunction() {
-    if (!rStack.isEmpty()) {
-      this.stack.add(rStack.pop());
-    } else {
-      System.out.println("Stack overflow.");
+    try {
+      stack.add(prng.getRandomNumber());
     }
+    catch (StackOverflowException e) {
+      printException(e);
+    }
+  }
+
+  private void printException(Exception e) {
+    System.out.println(e.getMessage());
   }
 
   private void printStackHead() {
