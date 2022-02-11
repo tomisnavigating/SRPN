@@ -2,22 +2,27 @@ import java.util.Stack;
 
 public class PseudoRandomNumberGenerator {
     
-        // This function is called when a "random" number is required.
-        // The legacy SRPN calculator produces a stream of pseudorandom 
-        // numbers, which (at least in the replit environment) appears to 
-        // always be seeded with the same number, and hence the sequence is 
-        // the same each time the software is run. 
-        // After the generator has provided 23 random numbers its supply is 
-        // exhausted, and the message "Stack overflow." is printed.
+        /*
+        This class is used to supply a "random" numbers.
+        The legacy SRPN calculator produces a stream of pseudorandom 
+        numbers, which (at least in the replit environment) appears to 
+        always be seeded with the same number, and hence the sequence is 
+        the same each time the software is run. In order to replicate this
+        behaviour, this class simply contains that list of numbers.
+        After the generator has provided 23 random numbers its supply is 
+        exhausted, and the message "Stack overflow." is printed.
+        */
 
         // the stack will contain the supply of random numbers.
         private Stack<Integer> stack;
 
     public PseudoRandomNumberGenerator() {
+
         // Initialise the stack
         stack = new Stack<Integer>();
-        // push the pseudorandom numbers into it 
-        // (in reverse order so that they pop off in the same order as the legacy calculator.)
+
+        // push the pseudorandom numbers into it in reverse order
+        // so that they pop off in the same order as the legacy calculator.
         stack.push(1804289383);
         stack.push(521595368);
         stack.push(35005211);
@@ -46,7 +51,8 @@ public class PseudoRandomNumberGenerator {
     public Integer getRandomNumber() throws StackOverflowException {
 
         // This function either provides the next pseudorandom number 
-        // in sequence, or throws an appropriate exception.
+        // in sequence, or throws an appropriate exception if the stack is
+        // empty.
 
         if (!stack.isEmpty()) {
             return stack.pop();
