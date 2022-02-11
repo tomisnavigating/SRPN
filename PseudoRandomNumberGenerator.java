@@ -5,10 +5,10 @@ public class PseudoRandomNumberGenerator {
         // This function is called when a "random" number is required.
         // The legacy SRPN calculator produces a stream of pseudorandom 
         // numbers, which (at least in the replit environment) appears to 
-        // always be seeded with the same number, and hence is always the same
-        // each time the software is run. 
-        // After the generator provides 23 random numbers its supply is exhausted,
-        // and the message "Stack overflow." is printed.
+        // always be seeded with the same number, and hence the sequence is 
+        // the same each time the software is run. 
+        // After the generator has provided 23 random numbers its supply is 
+        // exhausted, and the message "Stack overflow." is printed.
 
         // the stack will contain the supply of random numbers.
         private Stack<Integer> stack;
@@ -45,17 +45,13 @@ public class PseudoRandomNumberGenerator {
 
     public Integer getRandomNumber() throws StackOverflowException {
 
-        // This function either provides teh next pseudorandom number in sequence, or 
-        // throws the appropriate exception.
+        // This function either provides the next pseudorandom number 
+        // in sequence, or throws an appropriate exception.
 
-        if (!stack.isEmpty()) 
-        {
+        if (!stack.isEmpty()) {
             return stack.pop();
-        } 
-        else
-        {
+        } else {
             throw new StackOverflowException();
         }
     }
-
 }
