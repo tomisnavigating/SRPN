@@ -1,0 +1,89 @@
+import java.util.regex.*;
+import java.util.ArrayList;
+
+public class CommandParser {
+
+    // This class uses regular expression patterns which to extract discrete
+    // input parameters from the user input String.
+    // The patters wont change, so for the sake of only compiling it once,
+    // it's placed here as a static member variable, for efficient repeated use
+    // later.
+    // It matches different types of commands as follows:
+    // Group 1: Numerical values
+    // Group 2: +
+    // Group 3: -
+    // Group 4: *
+    // Group 5: /
+    // Group 6: %
+    // Group 7: ^
+    // Group 8: =
+    // Group 9: r (put a random number on the stack)
+    // Group 10: d (print the stack)
+    // Group 11: Whole comments within a line of input, eg: # This is a comment with
+    // a concluding hash #
+    // Group 12: Unfinished comments
+
+    // private static Pattern commandPattern =
+    // Pattern.compile("(-?[0-9]+)|([/+-/*//%^r])|([=d])|(#\\s[^#]*#)");
+    private static Pattern commandPattern = Pattern
+            .compile("(-?[0-9]+)|(/+)|(-)|(/*)|(//)|(%)|(^)|(=)|(r)|(d)|(#\\s[^#]*#)");
+
+    // Comments can span multiple lines of input, so if we detect an unfinished
+    // comment on a line we need to
+    // ignore all other input until we find the end of the comment. We'll use a
+    // separate regex pattern for this.
+    private static Pattern commentCompletionPattern = Pattern.compile("[^#]*#");
+
+    private Boolean currentlyWithinMultilineComment;
+
+    public ArrayList<Command> ParseInput(String s) {
+
+        // make a ArrayList to contain the commands found in this input
+        // ArrayList<String> commandList = new ArrayList<String>();
+        ArrayList<Command> commandList = new ArrayList<Command>();
+
+        // create a Matcher object which will search for matches in the input.
+        Matcher commandMatcher = commandPattern.matcher(s);
+
+        // Keep dealing with input while the regex is still matching patterns
+        // Inspired by the example found here:
+        // https://www.tutorialspoint.com/getting-the-list-of-all-the-matches-java-regular-expressions
+
+        while (commandMatcher.find()) {
+
+            String matchedCommand = commandMatcher.group();
+            // Find out which type of command this is, using a switch statement
+
+            if (commandMatcher.group(1) != null) {
+                commandList.add(new CommandNumeric(matchedCommand));
+            } else if (commandMatcher.group(2) != null) {
+                commandList.add(new CommandAdd());
+            } else if (commandMatcher.group(3) != null) {
+                commandList.add(new CommandSubtract());
+            } else if (commandMatcher.group(4) != null) {
+                commandList.add(new CommandMultiply());
+            } else if (commandMatcher.group(5) != null) {
+                commandList.add(new CommandDivide());
+            } else if (commandMatcher.group(6) != null) {
+                commandList.add(new CommandModulus());
+            } else if (commandMatcher.group(7) != null) {
+                commandList.add(new CommandPower());
+            } else if (commandMatcher.group(8) != null) {
+                commandList.add(new CommandEquals());
+            } else if (commandMatcher.group(9) != null) {
+                commandList.add(new CommandRandom());
+            } else if (commandMatcher.group(10) != null) {
+                commandList.add(new CommandPrintStack());
+            } else if (commandMatcher.group(11) != null) {
+                // this is a complete comment - we can ignore it.
+                continue;
+            } else if (commandMatcher.group(11) != null) {
+                // this is an incomplete comment - we can't accept any more commands from this
+                // line.
+                break;
+            }
+        }
+        return commandList;
+    }
+
+}

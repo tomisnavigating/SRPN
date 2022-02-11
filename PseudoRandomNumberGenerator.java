@@ -48,7 +48,7 @@ public class PseudoRandomNumberGenerator {
         stack.push(1804289383); 
     }
 
-    public Integer getRandomNumber() throws StackOverflowException {
+    public Integer getRandomNumber() throws ExceptionStackOverflow {
 
         // This function either provides the next pseudorandom number 
         // in sequence, or throws an appropriate exception if the stack is
@@ -57,7 +57,7 @@ public class PseudoRandomNumberGenerator {
         if (!stack.isEmpty()) {
             return stack.pop();
         } else {
-            throw new StackOverflowException();
+            throw new ExceptionStackOverflow();
         }
     }
 }
