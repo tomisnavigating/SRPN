@@ -10,6 +10,7 @@ public class SRPN {
   // processing and/or display
   private Stack<Integer> stack;
 
+  //
   private PseudoRandomNumberGenerator prng;
 
   // these static constants contain all legal input characters (apart from
@@ -28,6 +29,11 @@ public class SRPN {
 
   }
 
+  
+  /** 
+   * @param s
+   * @return String
+   */
   private static String removeComments(String s) {
     // The replaceAll method on String takes a regular expression and replaces all
     // matches within the String with another String
@@ -36,6 +42,11 @@ public class SRPN {
     return s.replaceAll("(#\\s)[^#]*#", "");
   }
 
+  
+  /** 
+   * @param s
+   * @return ArrayList<String>
+   */
   private static ArrayList<String> extractCommands(String s) {
     // make a ArrayList to contain the commands found in this input
     ArrayList<String> commandList = new ArrayList<String>();
@@ -59,6 +70,10 @@ public class SRPN {
     // https://www.tutorialspoint.com/getting-the-list-of-all-the-matches-java-regular-expressions
   }
 
+  
+  /** 
+   * @param s
+   */
   public void processCommand(String s) {
     // first we remove any comments in the input String.
     s = SRPN.removeComments(s);
@@ -105,6 +120,10 @@ public class SRPN {
     }
   }
 
+  
+  /** 
+   * @param operator
+   */
   private void processOperator(char operator) {
 
     if (this.stack.size() < 2) {
@@ -165,6 +184,11 @@ public class SRPN {
 
   }
 
+  
+  /** 
+   * @param s
+   * @return Boolean
+   */
   private static Boolean isLegalCommand(String s) {
     for (char c : s.toCharArray()) {
       if (!SRPN.isLegalCharacter(c)) {
@@ -174,11 +198,21 @@ public class SRPN {
     return true;
   }
 
+  
+  /** 
+   * @param c
+   * @return Boolean
+   */
   private static Boolean isLegalCharacter(char c) {
     return (Character.isDigit(c) || Character.isWhitespace(c) || SRPN.legalMathsOperators.indexOf(c) != -1
         || SRPN.legalActionKeys.indexOf(c) != -1);
   }
 
+  
+  /** 
+   * @param c
+   * @return Boolean
+   */
   private static Boolean isOperator(char c) {
     return SRPN.legalMathsOperators.indexOf(c) != -1;
   }
@@ -193,7 +227,12 @@ public class SRPN {
     }
   }
 
-  private void printException(Exception e) {
+  
+  /** 
+   * @param e
+   */
+  private static void printException(Exception e) {
+    
     System.out.println(e.getMessage());
   }
 
