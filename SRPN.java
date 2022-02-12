@@ -16,11 +16,7 @@ public class SRPN {
 
   private CommandParser commandParser;
 
-  // these static constants contain all legal input characters (apart from
-  // whitespace nd digits). We can use them to determine whether input is legal or
-  // not
-  private static final String legalMathsOperators = "+-*/%^";
-  private static final String legalActionKeys = "dr=";
+
 
   public SRPN() {
     stack = new Stack<Integer>();
@@ -35,10 +31,10 @@ public class SRPN {
     // first we remove any comments in the input String.
     // s = SRPN.removeComments(s);
     // then check that the remaining command string contains only legal characters
-    if (!SRPN.isLegalCommand(s)) {
-      // if the comand string contains any illegal characters, bail out now.
-      return;
-    }
+    // if (!SRPN.isLegalCommand(s)) {
+    //   // if the comand string contains any illegal characters, bail out now.
+    //   return;
+    // }
 
     // ArrayList<String> items = SRPN.extractCommands(s);
     ArrayList<Command> commands = commandParser.ParseInput(s);
@@ -118,38 +114,6 @@ public class SRPN {
   }
 
   
-  /** 
-   * @param s
-   * @return Boolean
-   */
-  private static Boolean isLegalCommand(String s) {
-    for (char c : s.toCharArray()) {
-      if (!SRPN.isLegalCharacter(c)) {
-        System.out.println(String.format("Unrecognised operator or operand \"%c\".", c));
-      }
-    }
-    return true;
-  }
-
-  
-  /** 
-   * @param c
-   * @return Boolean
-   */
-  private static Boolean isLegalCharacter(char c) {
-    return (Character.isDigit(c) || Character.isWhitespace(c) || SRPN.legalMathsOperators.indexOf(c) != -1
-        || SRPN.legalActionKeys.indexOf(c) != -1);
-  }
-
-  
-  /** 
-   * @param c
-   * @return Boolean
-   */
-  private static Boolean isOperator(char c) {
-    return SRPN.legalMathsOperators.indexOf(c) != -1;
-  }
-
 
   private void rFunction() {
     try {
