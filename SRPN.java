@@ -1,14 +1,36 @@
 
 import java.util.ArrayList;
 import java.util.Stack;
+
+import Exceptions.ExceptionPrintEmptyStack;
+import Exceptions.ExceptionStackEmpty;
+import Exceptions.ExceptionStackOverflow;
+import Exceptions.ExceptionStackUnderflow;
+
 import java.math.BigInteger;
-
-
 
 public class SRPN {
 
-  // the 'stack' is the data structure we will use to store user input for
-  // processing and/or display
+  /*
+   * This is the SRPN class which attempts to emulate the legacy SRPN calculator.
+   * 
+   * ** General Principles of Operation **
+   * 
+   * The underlying stack contains data of Integer type, but to
+   * handle saturation correctly:
+   * - Numbers are popped from the stack as BigIntegers so that arithmetic which
+   * would overflow on Integers can succeed.
+   * - Numbers (user input and calculation results) are pushed onto the stack as
+   * BigIntegers so that overflow can be handled (by saturation and safe casting
+   * to Integers) in one place.
+   * 
+   * User input is converted to Command Objects by the CommandParser, (which uses
+   * Regular expressions to extract individual command items and comments).
+   * Command Objects all implement the ICommand interface, which means they have
+   * an execute() method, and their actual implementation is transparent to the
+   * SRPN class.
+   */
+
   private Stack<Integer> stack;
 
   private PseudoRandomNumberGenerator prng;
@@ -24,75 +46,102 @@ public class SRPN {
     prng = new PseudoRandomNumberGenerator();
   }
 
-
-  
+  /**
+   * The entry point for the main program using the SRPN calculator. 
+   * Receives user input in String format, parses the input into actionable commands
+   * and executes those commands on the SRPN stack.
+   * 
+   * @param s the user input
+   */
   public void processCommand(String s) {
 
     // Extract the commands contained within the input using the CommandParser.
-    ArrayList<Command> commands = commandParser.ParseInput(s);
+    ArrayList<ICommand> commands = commandParser.ParseInput(s);
 
-    // Iterate through a the list of extracted commands, and execute them.
-    for (Command command : commands) {
-      
-      command.execute(this);
-      
+    // Iterate through a the list of extracted commands, and try to execute them.
+    for (ICommand command : commands) {
+
+      try {
+        command.execute(this);
+      } catch (Exception e) {
+        System.out.println(e.getMessage());
+      }
+
     }
   }
 
+  /**
+   * @return int
+   */
   public int getStackSize() {
     return stack.size();
-  }  
+  }
 
-  
+  /**
+   * Casts a number of type BigInteger to Integer, using saturation to handle overflow, 
+   * and pushes the Integer to the stack.
+   * 
+   * @param value
+   */
   public void pushToStack(BigInteger value) {
 
-    if (value.compareTo(BigInteger.valueOf(0)) >= 0 ) // a positive number or 0 
-    { 
+    if (value.compareTo(BigInteger.valueOf(0)) >= 0) // a positive number or 0
+    {
       stack.push(value.min(SRPN.MAX_VALUE).intValue());
-    }
-    else {
+    } else {
       stack.push(value.max(SRPN.MIN_VALUE).intValue());
     }
   }
 
+  /** 
+   * Returns an array containing the two numbers on top of the stack as BigIntegers.
+   * 
+   * @return BigInteger[]
+   * @throws ExceptionStackUnderflow
+   */
   public BigInteger[] getOperands() throws ExceptionStackUnderflow {
-    // this function returns the two numbers on top of the stack.
-    // The return type is an array of BigIntegers, so that mathematical
-    // operations are alowed to overflow the max or min Integer values.
-    // The operation results can then be saturated on the way back in.
+
     if (getStackSize() >= 2) {
-      BigInteger [] operands = {BigInteger.valueOf(stack.pop()), BigInteger.valueOf(stack.pop())};
+      BigInteger[] operands = { BigInteger.valueOf(stack.pop()), BigInteger.valueOf(stack.pop()) };
       return operands;
-    } 
-    else {
+    } else {
       throw new ExceptionStackUnderflow();
     }
   }
 
-  public void addRandomNumberToStack() {
-    try {
-      stack.add(prng.getRandomNumber());
-    }
-    catch (ExceptionStackOverflow e) {
-
-    }
+  /**
+   * Pushes a random number to the stack from the pseudorandom number generator.
+   * 
+   * @throws ExceptionStackOverflow
+   */
+  public void addRandomNumberToStack() throws ExceptionStackOverflow {
+    stack.add(prng.getRandomNumber());
   }
 
-  void printStackHead() {
+  /**
+   * Prints the number on the top of the stack, or throws an exception 
+   * with appropriate message if the stack is empty.
+   * 
+   * @throws ExceptionStackEmpty
+   */
+  void printStackHead() throws ExceptionStackEmpty {
     if (!stack.isEmpty()) {
       System.out.println(this.stack.peek());
     } else {
-      System.out.println("Stack empty.");
+      throw new ExceptionStackEmpty();
     }
   }
 
-  void printStack() {
-    // prints the contents of the SPRN's stack.
-    // A flaw (?) in the SRPN program seems to be that is the stack is empty,
-    // -2147483648 is printed
+  /**
+   * Prints all numbers on the stack, each on a new line.
+   * Throws an exception with appropriate message if the stack is empty. 
+   * 
+   * @throws ExceptionPrintEmptyStack
+   */
+  void printStack() throws ExceptionPrintEmptyStack {
 
     if (this.stack.isEmpty()) {
-      System.out.println(Integer.MIN_VALUE);
+      throw new ExceptionPrintEmptyStack();
     }
 
     for (int i : this.stack) {

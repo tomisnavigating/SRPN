@@ -1,28 +1,31 @@
 import java.util.Stack;
 
-public class PseudoRandomNumberGenerator {
-    
-        /*
-        This class is used to supply a "random" numbers.
-        The legacy SRPN calculator produces a stream of pseudorandom 
-        numbers, which (at least in the replit environment) appears to 
-        always be seeded with the same number, and hence the sequence is 
-        the same each time the software is run. In order to replicate this
-        behaviour, this class simply contains that list of numbers.
-        After the generator has provided 23 random numbers its supply is 
-        exhausted, and the message "Stack overflow." is printed.
-        */
+import Exceptions.ExceptionStackOverflow;
 
-        // the stack will contain the supply of random numbers.
-        private Stack<Integer> stack;
+public class PseudoRandomNumberGenerator {
+
+    /*
+     * This class is used to supply "random" numbers.
+     * The legacy SRPN calculator's rng produces a stream of pseudorandom
+     * numbers, which (at least in the replit environment) appears to
+     * always be seeded with the same number, and hence the sequence is
+     * the same each time the software is run. In order to replicate this
+     * behaviour, this class simply contains that list of numbers.
+     * After the generator has provided 23 random numbers its supply is
+     * exhausted, and the message "Stack overflow." is printed.
+     */
+
+
+    private Stack<Integer> stack;
 
     public PseudoRandomNumberGenerator() {
 
-        // Initialise the stack
+        // Initialise the stack, onto which the sequence of pseudorandom numbers can be
+        // pushed.
         stack = new Stack<Integer>();
 
-        // push the pseudorandom numbers into it in reverse order
-        // so that they pop off in the same order as the legacy calculator.
+        // push the pseudorandom numbers into it in reverse order so that they pop off
+        // in the same order as the legacy calculator.
         stack.push(1804289383);
         stack.push(521595368);
         stack.push(35005211);
@@ -45,14 +48,17 @@ public class PseudoRandomNumberGenerator {
         stack.push(1714636915);
         stack.push(1681692777);
         stack.push(846930886);
-        stack.push(1804289383); 
+        stack.push(1804289383);
     }
 
+    /**
+     * This function either returns the next pseudorandom number in sequence, or
+     * throws an appropriate exception if the stack is empty.
+     * 
+     * @return the next Integer in the sequence
+     * @throws ExceptionStackOverflow
+     */
     public Integer getRandomNumber() throws ExceptionStackOverflow {
-
-        // This function either provides the next pseudorandom number 
-        // in sequence, or throws an appropriate exception if the stack is
-        // empty.
 
         if (!stack.isEmpty()) {
             return stack.pop();

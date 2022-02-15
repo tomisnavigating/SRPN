@@ -1,6 +1,7 @@
+
 import java.math.BigInteger;
 
-public class CommandNumeric extends Command {
+public class CommandNumeric implements ICommand {
     
     private BigInteger input;
 

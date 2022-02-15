@@ -1,3 +1,4 @@
+package Exceptions;
 public class ExceptionStackUnderflow extends Exception {
 
     /*
@@ -10,6 +11,5 @@ public class ExceptionStackUnderflow extends Exception {
     public ExceptionStackUnderflow()
     {
         super(message);
-        System.out.println(message);
     }
 }
