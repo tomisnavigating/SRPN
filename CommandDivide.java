@@ -13,6 +13,7 @@ public class CommandDivide extends Command implements ICommand {
             BigInteger result = operandA.divide(operandB);
             srpn.pushToStack(result);
         } catch (ArithmeticException e) {
+            super.replaceOperands(srpn);
             throw new ExceptionZeroDivision();
         }
     }

@@ -1,11 +1,11 @@
 import java.math.BigInteger;
 
+import Exceptions.ExceptionNegativePower;
 import Exceptions.ExceptionStackUnderflow;
-import Exceptions.ExceptionZeroDivision;
 
 public class CommandPower extends Command implements ICommand {
     
-    public void execute(SRPN srpn) throws ExceptionStackUnderflow, ExceptionZeroDivision {
+    public void execute(SRPN srpn) throws ExceptionStackUnderflow, ExceptionNegativePower {
 
         super.getOperands(srpn);
 
@@ -13,9 +13,9 @@ public class CommandPower extends Command implements ICommand {
             BigInteger result = operandA.pow(operandB.intValue());
             srpn.pushToStack(result);
         } catch (ArithmeticException e) {
-            throw new ExceptionZeroDivision();
+            super.replaceOperands(srpn);
+            throw new ExceptionNegativePower();
         }
-
 
     }
 }
