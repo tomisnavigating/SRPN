@@ -3,36 +3,28 @@ import java.util.ArrayList;
 
 public class CommandParser {
 
-    // these static constants contain all legal input characters (apart from
-    // whitespace nd digits). We can use them to determine whether input is legal or
-    // not
-    private static final String legalMathsOperators = "+-*/%^";
-    private static final String legalActionKeys = "dr=";
-
     /*
      * This class uses regular expression patterns which to extract discrete
      * input parameters from the user input String.
      * The patters wont change, so for the sake of only compiling it once,
      * it's placed here as a static member variable, for efficient repeated use
      * later.
-     * It matches different types of commands as follows:
-     * Group 1: Numerical values
-     * Group 2: +
-     * Group 3: -
-     * Group 4: *
-     * Group 5: /
-     * Group 6: %
-     * Group 7: ^
-     * Group 8: =
-     * Group 9: r (put a random number on the stack)
-     * Group 10: d (print the stack)
-     * Group 11: Whole comments within a line of input, eg: # This is a comment with
-     * a concluding hash #
-     * Group 12: Unfinished comments
-     */
-
+    */
     private static Pattern commandPattern = Pattern
-            .compile("(-?[0-9]+)|(\\+)|(-)|(\\*)|(\\/)|(%)|(\\^)|(=)|(r)|(d)|(#\\s[^#]*#)|(#\\s[^#]*)");
+            .compile(
+                "(-?[0-9]+)" +  // Numeric input (with or without preceeding "-") (no decimals)
+                "|(\\+)" +      // +
+                "|(-)" +        // -
+                "|(\\*)" +      // *      
+                "|(\\/)" +      // /
+                "|(%)" +        // %
+                "|(\\^)" +      // ^
+                "|(=)" +        // =
+                "|(r)" +        // r
+                "|(d)" +        // d
+                "|(#\\s[^#]*#)" +     // Comments without termination
+                "|(#\\s[^#]*)" +      // Comments without termination
+                "|([^\\+\\-\\*\\/%\\^=rd\\s])");     // Unrecognised content
 
     /*
      * Comments can span multiple lines of input, so if we detect an unfinished
@@ -70,9 +62,6 @@ public class CommandParser {
             }
         }
 
-        // The legacy SRPN calculator warns the user of unrecognised input content. 
-        flagIllegalContent(s);
-
         // Make a ArrayList to contain the commands found in this input. Anything
         // retuned in this list implements the ICommand interface, and can therefore be
         // executed
@@ -90,7 +79,7 @@ public class CommandParser {
             String matchedCommand = commandMatcher.group();
             // Find out what command this is, create a an appropriate object
             // implementing ICommand and add it to the list.
-            // Also handle comments.
+            // Also handle comments and unrecognised content
 
             if (commandMatcher.group(1) != null) {
                 commandList.add(new CommandNumeric(matchedCommand));
@@ -122,32 +111,11 @@ public class CommandParser {
                 // System.out.println("unfinished Comment!!!");
                 currentlyWithinMultilineComment = true;
                 break;
+            } else if (commandMatcher.group(13) != null) {
+                commandList.add(new CommandUnrecognised(matchedCommand));
             }
         }
         return commandList;
     }
 
-    private static void flagIllegalContent(String s) {
-
-        // we shouldn't flag illegal content within a comment, so we will remove those
-        // before making the check:
-        // first the complete comments:
-        s = s.replaceAll("(#\\s)[^#]*#", "");
-        // and then the incomplete comments:
-        s = s.replaceAll("(#\\s)[^#]*", "");
-
-        for (char c : s.toCharArray()) {
-            if (!CommandParser.isLegalCharacter(c)) {
-                System.out.println(String.format("Unrecognised operator or operand \"%c\".", c));
-            }
-        }
-
-    }
-
-    private static Boolean isLegalCharacter(char c) {
-        return (Character.isDigit(c) ||
-                Character.isWhitespace(c) ||
-                CommandParser.legalMathsOperators.indexOf(c) != -1 ||
-                CommandParser.legalActionKeys.indexOf(c) != -1);
-    }
 }
