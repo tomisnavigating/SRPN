@@ -109,12 +109,12 @@ public class CommandParser {
                 commandList.add(new CommandPrintStack());
             } else if (commandMatcher.group(11) != null) {
                 // this is a complete comment - we can ignore it.
-                System.out.println("Comment!!!");
+                // System.out.println("Comment!!!");
                 continue;
             } else if (commandMatcher.group(12) != null) {
                 // this is an incomplete comment - we can't accept any more commands from this
                 // line.
-                System.out.println("unfinished Comment!!!");
+                // System.out.println("unfinished Comment!!!");
                 currentlyWithinMultilineComment = true;
                 break;
             }

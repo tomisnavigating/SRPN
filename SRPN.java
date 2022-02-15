@@ -1,7 +1,7 @@
 
 import java.util.ArrayList;
 import java.util.Stack;
-import java.lang.Math;
+import java.math.BigInteger;
 
 
 
@@ -11,12 +11,12 @@ public class SRPN {
   // processing and/or display
   private Stack<Integer> stack;
 
-  //
   private PseudoRandomNumberGenerator prng;
 
   private CommandParser commandParser;
 
-
+  private static final BigInteger MAX_VALUE = BigInteger.valueOf(Integer.MAX_VALUE);
+  private static final BigInteger MIN_VALUE = BigInteger.valueOf(Integer.MIN_VALUE);
 
   public SRPN() {
     stack = new Stack<Integer>();
@@ -24,24 +24,14 @@ public class SRPN {
     prng = new PseudoRandomNumberGenerator();
   }
 
-  
-  
 
+  
   public void processCommand(String s) {
-    // first we remove any comments in the input String.
-    // s = SRPN.removeComments(s);
-    // then check that the remaining command string contains only legal characters
-    // if (!SRPN.isLegalCommand(s)) {
-    //   // if the comand string contains any illegal characters, bail out now.
-    //   return;
-    // }
 
-    // ArrayList<String> items = SRPN.extractCommands(s);
+    // Extract the commands contained within the input using the CommandParser.
     ArrayList<Command> commands = commandParser.ParseInput(s);
 
-
-
-    // Iterate through a the list of extracted commands
+    // Iterate through a the list of extracted commands, and execute them.
     for (Command command : commands) {
       
       command.execute(this);
@@ -49,91 +39,46 @@ public class SRPN {
     }
   }
 
+  public int getStackSize() {
+    return stack.size();
+  }  
+
   
-  /** 
-   * @param operator
-   */
-  private void processOperator(char operator) {
+  public void pushToStack(BigInteger value) {
 
-    if (this.stack.size() < 2) {
-      System.out.println("Stack underflow.");
-      return;
+    if (value.compareTo(BigInteger.valueOf(0)) >= 0 ) // a positive number or 0 
+    { 
+      stack.push(value.min(SRPN.MAX_VALUE).intValue());
     }
-
-    // We'll perform the maths operations on Long type, and then cast to Integer,
-    // handling saturation.
-
-    Long b = Long.valueOf(this.stack.pop());
-    Long a = Long.valueOf(this.stack.pop());
-
-    Long result = null;
-
-    // The following switch statement provides a code path for each possible operator.
-    switch (operator) {
-    case '+':
-      result = a + b;
-      break;
-
-    case '-':
-      result = a - b;
-      break;
-
-    case '*':
-      result = a * b;
-      break;
-
-    case '/':
-      // prevent propagation of zero division exception by using a try catch:
-      try {
-        result = a / b;
-      } catch (ArithmeticException e) {
-        System.out.println("Divide by 0.");
-      }
-      break;
-
-    case '%':
-      result = a % b;
-      break;
-
-    case '^':
-      result = (long) Math.pow(a, b);
-      break;
+    else {
+      stack.push(value.max(SRPN.MIN_VALUE).intValue());
     }
-
-    if (result != null) {
-
-      if (result > Long.valueOf(Integer.MAX_VALUE)) {
-        this.stack.push(Integer.MAX_VALUE);
-      } else if (result < Long.valueOf(Integer.MIN_VALUE)) {
-        this.stack.push(Integer.MIN_VALUE);
-      } else {
-        this.stack.push(result.intValue());
-      }
-    }
-
   }
 
-  
+  public BigInteger[] getOperands() throws ExceptionStackUnderflow {
+    // this function returns the two numbers on top of the stack.
+    // The return type is an array of BigIntegers, so that mathematical
+    // operations are alowed to overflow the max or min Integer values.
+    // The operation results can then be saturated on the way back in.
+    if (getStackSize() >= 2) {
+      BigInteger [] operands = {BigInteger.valueOf(stack.pop()), BigInteger.valueOf(stack.pop())};
+      return operands;
+    } 
+    else {
+      throw new ExceptionStackUnderflow();
+    }
+  }
 
-  private void rFunction() {
+  public void addRandomNumberToStack() {
     try {
       stack.add(prng.getRandomNumber());
     }
     catch (ExceptionStackOverflow e) {
-      printException(e);
+
     }
   }
 
-  
-  /** 
-   * @param e
-   */
-  private static void printException(Exception e) {
-    
-    System.out.println(e.getMessage());
-  }
-
-  private void printStackHead() {
+  void printStackHead() {
     if (!stack.isEmpty()) {
       System.out.println(this.stack.peek());
     } else {
@@ -141,7 +86,7 @@ public class SRPN {
     }
   }
 
-  private void printStack() {
+  void printStack() {
     // prints the contents of the SPRN's stack.
     // A flaw (?) in the SRPN program seems to be that is the stack is empty,
     // -2147483648 is printed

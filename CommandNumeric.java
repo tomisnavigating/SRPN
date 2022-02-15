@@ -1,14 +1,16 @@
+import java.math.BigInteger;
+
 public class CommandNumeric extends Command {
     
-    private String input;
+    private BigInteger input;
 
     public CommandNumeric(String s) {
-        input = s;
+        input = new BigInteger(s);
     }
 
     @Override
     public void execute(SRPN srpn) {
-        System.out.println(input);
+        srpn.pushToStack(input);
     }
 
 }
