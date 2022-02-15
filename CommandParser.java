@@ -4,33 +4,33 @@ import java.util.ArrayList;
 public class CommandParser {
 
     /*
-     * This class uses regular expression patterns which to extract discrete
-     * input parameters from the user input String.
-     * The patters wont change, so for the sake of only compiling it once,
-     * it's placed here as a static member variable, for efficient repeated use
+     * This class uses a regular expression pattern with named capture groups
+     * to extract discrete input parameters from the user input String.
+     * The patterns won't change, so for the sake of only compiling it once,
+     * it's defined here as a static member variable for efficient repeated use
      * later.
     */
     private static Pattern commandPattern = Pattern
             .compile(
-                "(-?[0-9]+)" +  // Numeric input (with or without preceeding "-") (no decimals)
-                "|(\\+)" +      // +
-                "|(-)" +        // -
-                "|(\\*)" +      // *      
-                "|(\\/)" +      // /
-                "|(%)" +        // %
-                "|(\\^)" +      // ^
-                "|(=)" +        // =
-                "|(r)" +        // r
-                "|(d)" +        // d
-                "|(#\\s[^#]*#)" +     // Comments without termination
-                "|(#\\s[^#]*)" +      // Comments without termination
-                "|([^\\+\\-\\*\\/%\\^=rd\\s])");     // Unrecognised content
+                "(?<numeric>-?[0-9]+)" +    // Numeric input (with or without preceeding "-") (no decimals)
+                "|(?<add>\\+)" +            // +
+                "|(?<subtract>-)" +         // -
+                "|(?<multiply>\\*)" +       // *      
+                "|(?<divide>\\/)" +         // /
+                "|(?<modulus>%)" +          // %
+                "|(?<power>\\^)" +          // ^
+                "|(?<equals>=)" +           // =
+                "|(?<random>r)" +           // r
+                "|(?<printStack>d)" +       // d
+                "|(?<terminatedComment>#\\s[^#]*#)" +     // Comments without termination
+                "|(?<unterminatedComment>#\\s[^#]*)" +    // Comments without termination
+                "|(?<unrecognisedContent>[^\\+\\-\\*\\/%\\^=rd\\s])");     // Unrecognised content
 
     /*
      * Comments can span multiple lines of input, so if we detect an unfinished
      * comment on a line we need to
-     * ignore all other input until we find the end of the comment. We'll use a
-     * separate regex pattern for this.
+     * ignore all other input until we find the end of the comment. 
+     * A separate regex pattern is used for this.
      */
     private static Pattern commentCompletionPattern = Pattern.compile("[^#]*#");
 
@@ -56,8 +56,7 @@ public class CommandParser {
 
             } else {
                 // the comment hasn't ended, there's nothing else we can parse in this input
-                // line
-                // so return an empty list
+                // line: return an empty list
                 return new ArrayList<ICommand>();
             }
         }
@@ -76,42 +75,38 @@ public class CommandParser {
 
         while (commandMatcher.find()) {
 
-            String matchedCommand = commandMatcher.group();
-            // Find out what command this is, create a an appropriate object
+            String matchedCommand = commandMatcher.group(); // this is the matched String.
+
+            // Find out what command this is, create a the appropriate object
             // implementing ICommand and add it to the list.
             // Also handle comments and unrecognised content
 
-            if (commandMatcher.group(1) != null) {
+            if (commandMatcher.group("numeric") != null) {
                 commandList.add(new CommandNumeric(matchedCommand));
-            } else if (commandMatcher.group(2) != null) {
-                commandList.add(new CommandOperator(OperatorType.ADD));
-            } else if (commandMatcher.group(3) != null) {
-                commandList.add(new CommandOperator(OperatorType.SUBTRACT));
-            } else if (commandMatcher.group(4) != null) {
-                commandList.add(new CommandOperator(OperatorType.MULTIPLY));
-            } else if (commandMatcher.group(5) != null) {
-                commandList.add(new CommandOperator(OperatorType.DIVIDE));
-            } else if (commandMatcher.group(6) != null) {
-                commandList.add(new CommandOperator(OperatorType.MODULUS));
-            } else if (commandMatcher.group(7) != null) {
-                commandList.add(new CommandOperator(OperatorType.POWER));
-            } else if (commandMatcher.group(8) != null) {
+            } else if (commandMatcher.group("add") != null) {
+                commandList.add(new CommandAdd());
+            } else if (commandMatcher.group("subtract") != null) {
+                commandList.add(new CommandSubtract());
+            } else if (commandMatcher.group("multiply") != null) {
+                commandList.add(new CommandMultiply());
+            } else if (commandMatcher.group("divide") != null) {
+                commandList.add(new CommandDivide());
+            } else if (commandMatcher.group("modulus") != null) {
+                commandList.add(new CommandModulus());
+            } else if (commandMatcher.group("power") != null) {
+                commandList.add(new CommandPower());
+            } else if (commandMatcher.group("equals") != null) {
                 commandList.add(new CommandEquals());
-            } else if (commandMatcher.group(9) != null) {
+            } else if (commandMatcher.group("random") != null) {
                 commandList.add(new CommandRandom());
-            } else if (commandMatcher.group(10) != null) {
+            } else if (commandMatcher.group("printStack") != null) {
                 commandList.add(new CommandPrintStack());
-            } else if (commandMatcher.group(11) != null) {
-                // this is a complete comment - we can ignore it.
-                // System.out.println("Comment!!!");
+            } else if (commandMatcher.group("terminatedComment") != null) {
                 continue;
-            } else if (commandMatcher.group(12) != null) {
-                // this is an incomplete comment - we can't accept any more commands from this
-                // line.
-                // System.out.println("unfinished Comment!!!");
+            } else if (commandMatcher.group("unterminatedComment") != null) {
                 currentlyWithinMultilineComment = true;
                 break;
-            } else if (commandMatcher.group(13) != null) {
+            } else if (commandMatcher.group("unrecognisedContent") != null) {
                 commandList.add(new CommandUnrecognised(matchedCommand));
             }
         }
