@@ -1,8 +1,13 @@
+import java.math.BigInteger;
+
 public class CommandModulus extends Command {
     
-    @Override
-    public void execute(SRPN srpn) {
-        System.out.println("%");
+    public CommandModulus() {
+        try {
+            operator = BigInteger.class.getMethod("mod", BigInteger.class);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
 }
