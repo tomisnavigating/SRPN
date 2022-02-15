@@ -1,4 +1,3 @@
-package Exceptions;
 public class ExceptionNegativePower extends Exception {
 
     /*

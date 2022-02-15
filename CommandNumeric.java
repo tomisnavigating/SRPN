@@ -1,8 +1,6 @@
 
 import java.math.BigInteger;
 
-import Exceptions.ExceptionStackOverflow;
-
 public class CommandNumeric implements ICommand {
     
     private BigInteger input;

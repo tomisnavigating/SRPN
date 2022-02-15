@@ -1,9 +1,5 @@
 import java.math.BigInteger;
 
-import Exceptions.ExceptionStackOverflow;
-import Exceptions.ExceptionStackUnderflow;
-import Exceptions.ExceptionZeroDivision;
-
 public class CommandDivide extends Command implements ICommand {
     
     

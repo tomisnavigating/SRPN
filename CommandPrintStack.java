@@ -1,5 +1,3 @@
-import Exceptions.ExceptionPrintEmptyStack;
-
 public class CommandPrintStack implements ICommand {
     
     

@@ -1,5 +1,3 @@
-import Exceptions.ExceptionStackEmpty;
-
 public class CommandEquals implements ICommand {
     
     /** 

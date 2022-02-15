@@ -1,6 +1,3 @@
-package Exceptions;
-
-
 public class ExceptionStackEmpty extends Exception{
 
     /*
