@@ -27,12 +27,12 @@ public class CommandParser {
                 "|(?<unrecognisedContent>[^\\+\\-\\*\\/%\\^=rd\\s])");     // Unrecognised content
 
     /*
-     * Comments can span multiple lines of input, so if we detect an unfinished
-     * comment on a line we need to
-     * ignore all other input until we find the end of the comment. 
+     * Comments can span multiple lines of input, so if an unterminated
+     * comment is detected on a line, all other input is ignored until 
+     * the end of the comment is found.
      * A separate regex pattern is used for this.
      */
-    private static Pattern commentCompletionPattern = Pattern.compile("[^#]*#");
+    private static Pattern commentTerminationPattern = Pattern.compile("[^#]*#");
 
     private Boolean currentlyWithinMultilineComment = false;
 
@@ -45,7 +45,7 @@ public class CommandParser {
          */
 
         if (currentlyWithinMultilineComment) {
-            Matcher commentCompletionMatcher = commentCompletionPattern.matcher(s);
+            Matcher commentCompletionMatcher = commentTerminationPattern.matcher(s);
             if (commentCompletionMatcher.find()) {
 
                 // If we find an end to the comment, remove the comment content and proceed with
@@ -63,23 +63,25 @@ public class CommandParser {
 
         // Make a ArrayList to contain the commands found in this input. Anything
         // retuned in this list implements the ICommand interface, and can therefore be
-        // executed
+        // has an execute() method.
         ArrayList<ICommand> commandList = new ArrayList<ICommand>();
 
         // create a Matcher object which will search for matches in the input.
         Matcher commandMatcher = commandPattern.matcher(s);
 
-        // Keep dealing with input while the regex is still matching the patterm
-        // Inspired by the example found here:
-        // https://www.tutorialspoint.com/getting-the-list-of-all-the-matches-java-regular-expressions
-
+        // Keep dealing with input while the regex is still matching the pattern
         while (commandMatcher.find()) {
 
             String matchedCommand = commandMatcher.group(); // this is the matched String.
 
-            // Find out what command this is, create a the appropriate object
-            // implementing ICommand and add it to the list.
-            // Also handle comments and unrecognised content
+            /*
+             * The following series of if/else statements determines
+             * which named group the match appears in.
+             * This indicates which subclass of Command is required.
+             * The an isntance of the appropriate Command subclass is then
+             * instantiated and added to the list of commands,
+             * with the match String as an intialisation parameter if required.
+             */
 
             if (commandMatcher.group("numeric") != null) {
                 commandList.add(new CommandNumeric(matchedCommand));

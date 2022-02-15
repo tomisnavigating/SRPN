@@ -94,8 +94,10 @@ public class SRPN {
     } else {
       if (value.compareTo(BigInteger.valueOf(0)) >= 0) // a positive number or 0
       {
-        stack.push(value.min(SRPN.MAX_VALUE).intValue());
+        // push the smaller of the value and the maximum supported value, thereby saturating.
+        stack.push(value.min(SRPN.MAX_VALUE).intValue()); 
       } else {
+        // push the larger of the value and the minumum supported value, thereby saturating.
         stack.push(value.max(SRPN.MIN_VALUE).intValue());
       }
     }

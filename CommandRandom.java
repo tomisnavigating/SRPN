@@ -2,9 +2,15 @@ import Exceptions.ExceptionStackOverflow;
 
 public class CommandRandom implements ICommand {
     
-    @Override
+    
+    /** 
+     * @param srpn The SRPN on which to execute the command
+     * @throws ExceptionStackOverflow
+     */
     public void execute(SRPN srpn) throws ExceptionStackOverflow {
+
         srpn.addRandomNumberToStack();
+        
     }
 
 }

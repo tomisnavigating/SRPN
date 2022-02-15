@@ -6,6 +6,13 @@ import Exceptions.ExceptionStackUnderflow;
 
 public class CommandPower extends Command implements ICommand {
     
+    
+    /** 
+     * @param srpn The SRPN on which to execute the command
+     * @throws ExceptionStackUnderflow
+     * @throws ExceptionStackOverflow
+     * @throws ExceptionNegativePower
+     */
     public void execute(SRPN srpn) throws ExceptionStackUnderflow, ExceptionStackOverflow, ExceptionNegativePower {
 
         super.getOperands(srpn);

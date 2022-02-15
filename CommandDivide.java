@@ -6,6 +6,13 @@ import Exceptions.ExceptionZeroDivision;
 
 public class CommandDivide extends Command implements ICommand {
     
+    
+    /** 
+     * @param srpn The SRPN on which to execute the command
+     * @throws ExceptionZeroDivision
+     * @throws ExceptionStackUnderflow
+     * @throws ExceptionStackOverflow
+     */
     public void execute(SRPN srpn) throws ExceptionZeroDivision, ExceptionStackUnderflow, ExceptionStackOverflow {
 
         super.getOperands(srpn);
