@@ -9,14 +9,12 @@ public class CommandUnrecognised implements ICommand {
         this.input = s;
     }
 
-    
-    /** 
+    /**
      * @param srpn The SRPN on which to execute the command
      */
-    @Override
     public void execute(SRPN srpn) {
 
-        for (char c: input.toCharArray()) {
+        for (char c : input.toCharArray()) {
             System.out.println(String.format("Unrecognised operator or operand \"%c\".", c));
         }
 

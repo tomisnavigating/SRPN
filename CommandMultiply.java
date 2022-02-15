@@ -4,8 +4,7 @@ import Exceptions.ExceptionStackOverflow;
 import Exceptions.ExceptionStackUnderflow;
 
 public class CommandMultiply extends Command implements ICommand {
-    
-    
+     
     /** 
      * @param srpn The SRPN on which to execute the command
      * @throws ExceptionStackUnderflow

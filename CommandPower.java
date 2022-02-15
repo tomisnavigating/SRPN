@@ -5,9 +5,8 @@ import Exceptions.ExceptionStackOverflow;
 import Exceptions.ExceptionStackUnderflow;
 
 public class CommandPower extends Command implements ICommand {
-    
-    
-    /** 
+
+    /**
      * @param srpn The SRPN on which to execute the command
      * @throws ExceptionStackUnderflow
      * @throws ExceptionStackOverflow

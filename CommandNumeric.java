@@ -11,12 +11,10 @@ public class CommandNumeric implements ICommand {
         input = new BigInteger(s);
     }
 
-    
     /** 
      * @param srpn The SRPN on which to execute the command
      * @throws ExceptionStackOverflow
      */
-    @Override
     public void execute(SRPN srpn) throws ExceptionStackOverflow {
         srpn.pushToStack(input);
     }
