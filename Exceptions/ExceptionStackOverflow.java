@@ -11,6 +11,5 @@ public class ExceptionStackOverflow extends Exception {
     public ExceptionStackOverflow()
     {
         super(message);
-        System.out.println(message);
     }
 }

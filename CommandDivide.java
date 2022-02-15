@@ -1,11 +1,12 @@
 import java.math.BigInteger;
 
+import Exceptions.ExceptionStackOverflow;
 import Exceptions.ExceptionStackUnderflow;
 import Exceptions.ExceptionZeroDivision;
 
 public class CommandDivide extends Command implements ICommand {
     
-    public void execute(SRPN srpn) throws ExceptionZeroDivision, ExceptionStackUnderflow{
+    public void execute(SRPN srpn) throws ExceptionZeroDivision, ExceptionStackUnderflow, ExceptionStackOverflow {
 
         super.getOperands(srpn);
         

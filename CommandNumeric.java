@@ -1,6 +1,8 @@
 
 import java.math.BigInteger;
 
+import Exceptions.ExceptionStackOverflow;
+
 public class CommandNumeric implements ICommand {
     
     private BigInteger input;
@@ -10,7 +12,7 @@ public class CommandNumeric implements ICommand {
     }
 
     @Override
-    public void execute(SRPN srpn) {
+    public void execute(SRPN srpn) throws ExceptionStackOverflow {
         srpn.pushToStack(input);
     }
 

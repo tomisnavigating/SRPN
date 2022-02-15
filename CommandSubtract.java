@@ -1,10 +1,11 @@
 import java.math.BigInteger;
 
+import Exceptions.ExceptionStackOverflow;
 import Exceptions.ExceptionStackUnderflow;
 
 public class CommandSubtract extends Command implements ICommand {
     
-    public void execute(SRPN srpn) throws ExceptionStackUnderflow {
+    public void execute(SRPN srpn) throws ExceptionStackUnderflow, ExceptionStackOverflow {
 
         super.getOperands(srpn);
         

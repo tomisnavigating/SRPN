@@ -1,5 +1,6 @@
 import java.math.BigInteger;
 
+import Exceptions.ExceptionStackOverflow;
 import Exceptions.ExceptionStackUnderflow;
 
 public class Command {
@@ -32,7 +33,7 @@ public class Command {
      * 
      * @param srpn the SRPN to operate upon.
      */
-    public void replaceOperands(SRPN srpn) {
+    public void replaceOperands(SRPN srpn) throws ExceptionStackOverflow {
         srpn.pushToStack(operandA);
         srpn.pushToStack(operandB);
     }

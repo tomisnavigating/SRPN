@@ -1,11 +1,12 @@
 import java.math.BigInteger;
 
 import Exceptions.ExceptionNegativePower;
+import Exceptions.ExceptionStackOverflow;
 import Exceptions.ExceptionStackUnderflow;
 
 public class CommandPower extends Command implements ICommand {
     
-    public void execute(SRPN srpn) throws ExceptionStackUnderflow, ExceptionNegativePower {
+    public void execute(SRPN srpn) throws ExceptionStackUnderflow, ExceptionStackOverflow, ExceptionNegativePower {
 
         super.getOperands(srpn);
 
