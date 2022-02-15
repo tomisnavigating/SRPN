@@ -40,6 +40,8 @@ public class SRPN {
   private static final BigInteger MAX_VALUE = BigInteger.valueOf(Integer.MAX_VALUE);
   private static final BigInteger MIN_VALUE = BigInteger.valueOf(Integer.MIN_VALUE);
 
+  private static final Integer MAX_STACK_SIZE = 23;
+
   public SRPN() {
     stack = new Stack<Integer>();
     commandParser = new CommandParser();
@@ -47,11 +49,11 @@ public class SRPN {
   }
 
   /**
-   * The entry point for the main program using the SRPN calculator. 
-   * Receives user input in String format, parses the input into actionable commands
-   * and executes those commands on the SRPN stack.
+   * The entry point for the main program using the SRPN calculator.
+   * Receives user input in String format, parses the input into actionable
+   * commands and executes those commands on the SRPN stack.
    * 
-   * @param s the user input
+   * @param s the user input.
    */
   public void processCommand(String s) {
 
@@ -66,11 +68,11 @@ public class SRPN {
       } catch (Exception e) {
         System.out.println(e.getMessage());
       }
-
     }
   }
 
   /**
+   * Returns the current size of the stack
    * @return int
    */
   public int getStackSize() {
@@ -78,25 +80,32 @@ public class SRPN {
   }
 
   /**
-   * Casts a number of type BigInteger to Integer, using saturation to handle overflow, 
-   * and pushes the Integer to the stack.
+   * Casts a number of type BigInteger to Integer, using saturation to handle
+   * overflow and pushes the Integer to the stack. If the stack has reached
+   * its maximum capacity, an appropriate exception is thrown.
    * 
    * @param value
+   * @throws ExceptionStackOverflow
    */
-  public void pushToStack(BigInteger value) {
+  public void pushToStack(BigInteger value) throws ExceptionStackOverflow {
 
-    if (value.compareTo(BigInteger.valueOf(0)) >= 0) // a positive number or 0
-    {
-      stack.push(value.min(SRPN.MAX_VALUE).intValue());
+    if (getStackSize() >= SRPN.MAX_STACK_SIZE) {
+      throw new ExceptionStackOverflow();
     } else {
-      stack.push(value.max(SRPN.MIN_VALUE).intValue());
+      if (value.compareTo(BigInteger.valueOf(0)) >= 0) // a positive number or 0
+      {
+        stack.push(value.min(SRPN.MAX_VALUE).intValue());
+      } else {
+        stack.push(value.max(SRPN.MIN_VALUE).intValue());
+      }
     }
   }
 
-  /** 
-   * Returns an array containing the two numbers on top of the stack as BigIntegers.
+  /**
+   * Returns an array containing the two numbers on top of the stack as
+   * BigIntegers.
    * 
-   * @return BigInteger[]
+   * @return BigInteger[] The top two numbers on the stack.
    * @throws ExceptionStackUnderflow
    */
   public BigInteger[] getOperands() throws ExceptionStackUnderflow {
@@ -112,14 +121,14 @@ public class SRPN {
   /**
    * Pushes a random number to the stack from the pseudorandom number generator.
    * 
-   * @throws ExceptionStackOverflow
+   * @throws ExceptionStackOverflow if stack is full.
    */
   public void addRandomNumberToStack() throws ExceptionStackOverflow {
-    stack.add(prng.getRandomNumber());
+    pushToStack(BigInteger.valueOf(prng.getRandomNumber()));
   }
 
   /**
-   * Prints the number on the top of the stack, or throws an exception 
+   * Prints the number on the top of the stack, or throws an exception
    * with appropriate message if the stack is empty.
    * 
    * @throws ExceptionStackEmpty
@@ -134,7 +143,7 @@ public class SRPN {
 
   /**
    * Prints all numbers on the stack, each on a new line.
-   * Throws an exception with appropriate message if the stack is empty. 
+   * Throws an exception with appropriate message if the stack is empty.
    * 
    * @throws ExceptionPrintEmptyStack
    */
